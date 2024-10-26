@@ -3,9 +3,7 @@ from .custom import CustomDataset
 
 class STPLS3DDataset(CustomDataset):
 
-    CLASSES = ('building', 'low vegetation', 'med. vegetation', 'high vegetation', 'vehicle',
-               'truck', 'aircraft', 'militaryVehicle', 'bike', 'motorcycle', 'light pole',
-               'street sign', 'clutter', 'fence')
+    CLASSES = ('stem', 'leaf')
 
     def getInstanceInfo(self, xyz, instance_label, semantic_label):
         ret = super().getInstanceInfo(xyz, instance_label, semantic_label)

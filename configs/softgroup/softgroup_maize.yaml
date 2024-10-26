@@ -1,0 +1,78 @@
+model:
+  channels: 16
+  num_blocks: 7
+  semantic_classes: 2
+  instance_classes: 2
+  sem2ins_classes: []
+  semantic_only: False
+  semantic_weight: [14.87, 1.0]
+  ignore_label: -100
+  with_coords: False
+  grouping_cfg:
+    score_thr: 0.2
+    radius: 0.8
+    mean_active: 3
+    class_numpoint_mean: [1100.0, 16357.0]
+    npoint_thr: 0.05  # absolute if class_numpoint == -1, relative if class_numpoint != -1
+    ignore_classes: []
+  instance_voxel_cfg:
+    scale: 0.1
+    spatial_shape: 20
+  train_cfg:
+    max_proposal_num: 300
+    pos_iou_thr: 0.5
+    match_low_quality: True
+    min_pos_thr: 0.1
+  test_cfg:
+    x4_split: False
+    cls_score_thr: 0.001
+    mask_score_thr: -0.5
+    min_npoint: 15
+    eval_tasks: ['semantic', 'instance']
+  fixed_modules: []
+
+data:
+  train:
+    type: 'stpls3d'
+    data_root: '/root/autodl-tmp/dataset/maize_20241020/'
+    prefix: 'train'
+    suffix: '.pth'
+    training: True
+    repeat: 1
+    voxel_cfg:
+      scale: 0.1
+      spatial_shape: [128, 512]
+      max_npoint: 800000
+      min_npoint: 5000
+  test:
+    type: 'stpls3d'
+    data_root: '/root/autodl-tmp/dataset/maize_20241020/'
+    prefix: 'val'
+    suffix: '.pth'
+    training: False
+    voxel_cfg:
+      scale: 0.1
+      spatial_shape: [128, 512]
+      max_npoint: 800000
+      min_npoint: 5000
+
+dataloader:
+  train:
+    batch_size: 4
+    num_workers: 0
+  test:
+    batch_size: 1
+    num_workers: 0
+
+optimizer:
+  type: 'Adam'
+  lr: 0.001
+
+eval_min_npoint: 10
+
+fp16: False
+epochs: 400
+step_epoch: 20
+save_freq: 4
+pretrain: '/root/autodl-tmp/softgroup-work-dir/latest.pth'
+work_dir: ''

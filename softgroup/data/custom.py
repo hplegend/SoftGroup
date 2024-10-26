@@ -38,6 +38,7 @@ class CustomDataset(Dataset):
         self.logger.info(f'Load {self.mode} dataset: {len(self.filenames)} scans')
 
     def get_filenames(self):
+        print('self.data_root', self.data_root)
         filenames = glob(osp.join(self.data_root, self.prefix, '*' + self.suffix))
         assert len(filenames) > 0, 'Empty dataset.'
         filenames = sorted(filenames * self.repeat)
@@ -157,6 +158,7 @@ class CustomDataset(Dataset):
         rgb = rgb[valid_idxs]
         semantic_label = semantic_label[valid_idxs]
         instance_label = self.getCroppedInstLabel(instance_label, valid_idxs)
+        print("instance_label ", instance_label, ",semantic_label", semantic_label)
         return xyz, xyz_middle, rgb, semantic_label, instance_label
 
     def transform_test(self, xyz, rgb, semantic_label, instance_label):

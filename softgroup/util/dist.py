@@ -76,6 +76,8 @@ def collect_results_gpu(result_part, size):
 def collect_results_cpu(result_part, size, tmpdir=None):
     rank, world_size = get_dist_info()
     # create a tmp dir if it is not specified
+    if world_size == 1:
+        return result_part
     if tmpdir is None:
         MAX_LEN = 512
         # 32 is whitespace
