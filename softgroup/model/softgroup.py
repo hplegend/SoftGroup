@@ -118,6 +118,8 @@ class SoftGroup(nn.Module):
             feats = torch.cat((feats, coords_float), 1)
         voxel_feats = voxelization(feats, p2v_map)
         input = spconv.SparseConvTensor(voxel_feats, voxel_coords.int(), spatial_shape, batch_size)
+        # print(input.spatial_shape)
+        # print(input.indices.shape)
         semantic_scores, pt_offsets, output_feats = self.forward_backbone(input, v2p_map)
 
         # point wise losses
@@ -567,7 +569,9 @@ class SoftGroup(nn.Module):
                 score_pred = cur_cls_scores * cur_iou_scores.clamp(0, 1)
                 mask_pred = torch.zeros((num_instances, num_points), dtype=torch.int, device='cuda')
                 mask_inds = cur_mask_scores > self.test_cfg.mask_score_thr
-                cur_proposals_idx = proposals_idx[mask_inds].long()
+                mask_inds_tensor = torch.tensor(mask_inds) # 这里有bug，不是同一个类型的，不能操作
+                mask_inds_tensor = mask_inds_tensor.to(proposals_idx.device)
+                cur_proposals_idx = proposals_idx[mask_inds_tensor].long()
                 mask_pred[cur_proposals_idx[:, 0], cur_proposals_idx[:, 1]] = 1
 
                 # filter low score instance
